@@ -64,7 +64,7 @@ public class Clicky extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 TextView disp = (TextView)findViewById(R.id.textView2);
-                disp.setText("Pressed:F");
+                disp.setText("Pressed: F");
             }
         });
     }
