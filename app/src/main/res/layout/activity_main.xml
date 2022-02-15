@@ -11,35 +11,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.473"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.137" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonPanel"
         android:layout_width="205dp"
         android:layout_height="40dp"
-        android:layout_marginTop="268dp"
         android:text="About Me"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.456"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/Clicky_Clicky"
+        app:layout_constraintEnd_toEndOf="@+id/Clicky_Clicky"
+        app:layout_constraintStart_toStartOf="@+id/Clicky_Clicky"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/Clicky_Clicky"
         android:layout_width="205dp"
         android:layout_height="40dp"
-        android:layout_marginTop="300dp"
         android:text="Clicky Clicky"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="205dp"
+        android:layout_height="40dp"
+        android:text="Link Collector"
+        app:layout_constraintEnd_toEndOf="@+id/Clicky_Clicky"
+        app:layout_constraintStart_toStartOf="@+id/Clicky_Clicky"
+        app:layout_constraintTop_toBottomOf="@+id/Clicky_Clicky" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
