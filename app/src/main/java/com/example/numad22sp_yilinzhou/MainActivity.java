@@ -16,9 +16,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
         Button button_Panel = (Button)findViewById(R.id.buttonPanel);
-
-
         button_Panel.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -29,6 +28,21 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        Button linkCollector = (Button)findViewById(R.id.LinkCollector);
+        linkCollector.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent intent=new Intent(MainActivity.this,LinkCollector.class);
+
+                startActivity(intent);
+            }
+        });
+
+
 
         Button Clicky = (Button)findViewById(R.id.Clicky_Clicky);
 

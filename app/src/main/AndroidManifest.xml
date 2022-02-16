@@ -10,9 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NUMAD22Sp_YilinZhou">
         <activity
-            android:name=".LinkCollector"
-            android:exported="false" />
-        <activity
             android:name=".AboutMe"
             android:exported="false" />
         <activity
@@ -27,6 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LinkCollector" />
     </application>
 
 </manifest>
