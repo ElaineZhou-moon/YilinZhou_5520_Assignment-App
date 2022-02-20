@@ -46,4 +46,13 @@
         app:layout_constraintStart_toStartOf="@+id/Clicky_Clicky"
         app:layout_constraintTop_toBottomOf="@+id/Clicky_Clicky" />
 
+    <Button
+        android:id="@+id/Locator"
+        android:layout_width="205dp"
+        android:layout_height="40dp"
+        android:text="Locator"
+        app:layout_constraintEnd_toEndOf="@+id/LinkCollector"
+        app:layout_constraintStart_toStartOf="@+id/LinkCollector"
+        app:layout_constraintTop_toBottomOf="@+id/LinkCollector" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

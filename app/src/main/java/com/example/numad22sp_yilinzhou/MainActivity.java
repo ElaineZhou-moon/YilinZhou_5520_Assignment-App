@@ -17,34 +17,33 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        Button button_Panel = (Button)findViewById(R.id.buttonPanel);
+        Button button_Panel = (Button) findViewById(R.id.buttonPanel);
         button_Panel.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MainActivity.this,AboutMe.class);
+                Intent intent = new Intent(MainActivity.this, AboutMe.class);
 
                 startActivity(intent);
             }
         });
 
 
-        Button linkCollector = (Button)findViewById(R.id.LinkCollector);
+        Button linkCollector = (Button) findViewById(R.id.LinkCollector);
         linkCollector.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MainActivity.this,LinkCollector.class);
+                Intent intent = new Intent(MainActivity.this, LinkCollector.class);
 
                 startActivity(intent);
             }
         });
 
 
-
-        Button Clicky = (Button)findViewById(R.id.Clicky_Clicky);
+        Button Clicky = (Button) findViewById(R.id.Clicky_Clicky);
 
         Clicky.setOnClickListener(new View.OnClickListener() {
 
@@ -54,9 +53,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button Locator = (Button) findViewById(R.id.Locator);
+        Locator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,Locator.class);
+                startActivity(intent);
+            }
+        });
+
     }
-    public void openActivityClicky(){
-        Intent intent = new Intent(this,Clicky.class);
+
+    public void openActivityClicky() {
+        Intent intent = new Intent(this, Clicky.class);
         startActivity(intent);
     }
+
+
 }
