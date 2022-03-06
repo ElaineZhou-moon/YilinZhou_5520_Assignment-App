@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,6 +59,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,Locator.class);
+                startActivity(intent);
+            }
+        });
+
+        Button webservice = (Button) findViewById(R.id.webservice);
+        webservice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,WebService.class);
                 startActivity(intent);
             }
         });

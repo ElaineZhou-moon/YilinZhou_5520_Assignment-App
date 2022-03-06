@@ -6,4 +6,7 @@
     <string name="description">This image acts as an icon.</string>
     <string name="link_url" />
     <string name="link_name" />
+    <string name="item_url">Item url</string>
+    <string name="item_id">ID</string>
+    <string name="item_img">Image</string>
 </resources>

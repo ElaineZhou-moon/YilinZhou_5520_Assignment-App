@@ -1,7 +1,7 @@
 package com.example.numad22sp_yilinzhou;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.content.Intent;
+import android.net.Uri;
 
 public class ItemCard implements ItemClickListener {
 
