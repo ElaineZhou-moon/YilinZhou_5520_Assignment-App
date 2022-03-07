@@ -1,36 +1,26 @@
 package com.example.numad22sp_yilinzhou;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.EditText;
-import android.app.AlertDialog;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,11 +33,10 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 
 public class WebService extends AppCompatActivity {
-
+    //Creating the essential parts needed for a Recycler view to work: RecyclerView, Adapter, LayoutManager
     private ArrayList<ServiceCard> serviceList = new ArrayList<>();
     ;
     private static final String TAG = "WebServiceActivity";
@@ -57,58 +46,38 @@ public class WebService extends AppCompatActivity {
     private static final String KEY_OF_INSTANCE = "KEY_OF_INSTANCE";
     private static final String NUMBER_OF_ITEMS = "NUMBER_OF_ITEMS";
 
+    private Handler handler=new Handler();
+    private int mProgress;
+    private ProgressBar progressBar;
+    private String input=null;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.webservice);
+    private class MultiThread extends Thread{
 
-        init(savedInstanceState);
-
-        Button webservice = (Button) findViewById(R.id.ping);
-        webservice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PingWebServiceTask task = new PingWebServiceTask();
-                try {
-                    String mealDB="https://www.themealdb.com/api/json/v1/1/filter.php?a=Canadian";
-                    String url = NetworkUtil.validInput(mealDB);
-                    task.execute(url); // This is a security risk.  Don't let your user enter the URL in a real app.
-                } catch (NetworkUtil.MyException e) {
-                    Toast.makeText(getApplication(),e.toString(),Toast.LENGTH_SHORT).show();
-                }
+        @Override
+        public void run(){
+            mProgress=0;
+            while(mProgress<90){
+                mProgress++;
+                android.os.SystemClock.sleep(10);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setProgress(mProgress);//refresh UI
+                    }
+                });
             }
-        });
-
-    }
-
-    private void init(Bundle savedInstanceState) {
-        initialItemData(savedInstanceState);
-        createRecyclerView();
-    }
-
-
-    private class PingWebServiceTask  extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            Log.i(TAG, "Making progress...");
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            JSONObject jObject = new JSONObject();
             try {
-
-                URL url = new URL(params[0]);
-
+                serviceList = new ArrayList<>();
+                String mealDB = "https://www.themealdb.com/api/json/v1/1/filter.php?a=" + input;
+                URL url = new URL(mealDB);
+                // Get String response from the url address
                 String resp = NetworkUtil.httpResponse(url);
-
+                //Log.i("resp",resp);
+                JSONObject jObject = new JSONObject();
+                // Transform String into JSONObject
                 jObject = new JSONObject(resp);
-
                 JSONArray jsonArray = jObject.getJSONArray("meals");
-
+                //Log.i("resp",jsonArray.getString(0));
                 for(int i=0;i<jsonArray.length();i++){
                     JSONObject body = jsonArray.getJSONObject(i);
                     String serviceName=body.getString("strMeal");
@@ -118,10 +87,9 @@ public class WebService extends AppCompatActivity {
                     ServiceCard serviceCard = new ServiceCard(bm,serviceID,serviceName);
                     serviceList.add(serviceCard);
                 }
-
-
-                return null;
-
+                progressBar.setProgress(100);
+                //Log.i("jTitle",jObject.getString("title"));
+                //Log.i("jBody",jObject.getString("body"));
             } catch (MalformedURLException e) {
                 Log.e(TAG,"MalformedURLException");
                 e.printStackTrace();
@@ -134,17 +102,63 @@ public class WebService extends AppCompatActivity {
             } catch (JSONException e) {
                 Log.e(TAG,"JSONException");
                 e.printStackTrace();
+                progressBar.setVisibility(View.INVISIBLE);
+                Looper.prepare();
+                Toast toast= Toast.makeText(getApplicationContext(), "No recipe in this area", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER,0,0);
+                toast.show();
+                Looper.loop();
             }
-
-            return null;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    recyclerView.setBackgroundColor(Color.DKGRAY);
+                    createRecyclerView();
+                    input=null;
+                }
+            });
         }
+    }
 
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
 
-            createRecyclerView();
-        }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.webservice);
+        init(savedInstanceState);
+
+
+
+        Button webservice = (Button) findViewById(R.id.ping);
+        webservice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText et = (EditText) findViewById(R.id.input);
+                input = et.getText().toString();
+                if(input.length()==0){
+                    Toast toast= Toast.makeText(getApplicationContext(), "Please input an area", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                }
+                else{
+                    progressBar=(ProgressBar) findViewById(R.id.progress);
+                    progressBar.setVisibility(View.VISIBLE);
+                    MultiThread mt = new MultiThread();
+                    Thread mt1 = new Thread(mt, "Service");
+                    mt.start();
+                    createRecyclerView();
+
+                }
+            }
+        });
+
+    }
+
+
+    private void init(Bundle savedInstanceState) {
+        initialItemData(savedInstanceState);
+        createRecyclerView();
     }
 
 
@@ -170,7 +184,10 @@ public class WebService extends AppCompatActivity {
                 }
             }
         }
+
+
     }
+
 
     private void createRecyclerView() {
         rLayoutManger = new LinearLayoutManager(this);
@@ -180,9 +197,8 @@ public class WebService extends AppCompatActivity {
         sviewAdapter = new SviewAdapter(serviceList);
         recyclerView.setAdapter(sviewAdapter);
         recyclerView.setLayoutManager(rLayoutManger);
-
-
     }
+
 
     static class SviewAdapter extends RecyclerView.Adapter<SviewHolder> {
 
@@ -192,10 +208,6 @@ public class WebService extends AppCompatActivity {
         //Constructor
         public SviewAdapter(ArrayList<ServiceCard> itemList) {
             this.itemList = itemList;
-        }
-
-        public void setOnItemClickListener(ItemClickListener listener) {
-            this.listener = listener;
         }
 
         @Override
@@ -212,7 +224,6 @@ public class WebService extends AppCompatActivity {
             holder.itemID.setText(currentItem.getServiceID());
             holder.itemName.setText(currentItem.getServiceName());
 
-
         }
 
         @Override
@@ -220,6 +231,7 @@ public class WebService extends AppCompatActivity {
             return itemList.size();
         }
     }
+
 
     static class SviewHolder extends RecyclerView.ViewHolder {
         public ImageView itemImg;
@@ -231,7 +243,6 @@ public class WebService extends AppCompatActivity {
             itemImg = itemView.findViewById(R.id.item_icon);
             itemID = itemView.findViewById(R.id.item_id);
             itemName = itemView.findViewById(R.id.item_name);
-
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -245,13 +256,12 @@ public class WebService extends AppCompatActivity {
                     }
                 }
             });
-
         }
     }
 
+
     public Bitmap getInternetPicture(String UrlPath) {
         Bitmap bm = null;
-
         String urlpath = UrlPath;
 
         try {
@@ -263,15 +273,10 @@ public class WebService extends AppCompatActivity {
             connection.setConnectTimeout(5000);
             connection.connect();
 
-
             if (connection.getResponseCode() == 200) {
                 InputStream is = connection.getInputStream();
                 bm = BitmapFactory.decodeStream(is);
-
-
-
             } else {
-
                 bm = null;
             }
         } catch (MalformedURLException e) {
@@ -280,6 +285,7 @@ public class WebService extends AppCompatActivity {
             e.printStackTrace();
         }
         return bm;
-
     }
+
+
 }
